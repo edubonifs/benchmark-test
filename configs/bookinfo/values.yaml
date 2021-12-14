@@ -1,0 +1,3 @@
+bookinfo:
+  replica: 3
+namespaces: 4

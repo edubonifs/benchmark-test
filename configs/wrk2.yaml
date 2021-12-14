@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: benchmark
+  namespace: benchmark
+  labels:
+    jobgroup: wrk2-prometheus
+spec:
+  template:
+    metadata:
+      name: wrk2-prometheus
+      annotations:
+        sidecar.istio.io/inject: enabled
+      labels:
+        jobgroup: wrk2-prometheus
+        app: wrk2-prometheus
+        custom-affinity: load-generator-node
+    spec:
+      restartPolicy: Never
+      volumes:
+      - name: tempfs
+        emptyDir:
+          medium: Memory
+      shareProcessNamespace: true
+      serviceAccountName: benchmark
+      containers:
+      - name: wrk2-prometheus
+        image: quay.io/kinvolk/wrk2-prometheus
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: tempfs
+          mountPath: "/tmpfs"
+        args:
+        - -p
+        - "http://pushgateway.monitoring:9091/metrics/job/svcmesh-istio/instance/{{.Values.wrk2.app.name}}/run/{{ now | date "2006-01-02_15:04:05" }}"
+        - -c
+        - "{{.Values.wrk2.connections}}"
+        - -d
+        - "{{.Values.wrk2.duration}}"
+        - -r
+        - "{{.Values.wrk2.RPS}}"
+        - -i
+        - "{{.Values.wrk2.initDelay}}"
+{{- template "bookinfoURLs" . }}

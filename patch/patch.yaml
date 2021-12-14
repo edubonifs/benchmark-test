@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage
+spec:
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: '`date -Iseconds`'
