@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: benchmark-{{$.Values.benchmark.name}}
+  namespace: benchmark
+spec:
+  selector:
+    matchLabels:
+      app: wrk2-prometheus
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: wrk2-prometheus
+    spec:
+      containers:
+      - args:
+        - -p
+        - "http://pushgateway.monitoring:9091/metrics/job/svcmesh-istio/instance/{{.Values.wrk2.app.name}}/run/{{ now | date "2006-01-02_15:04:05" }}"
+        - -c
+        - "{{.Values.wrk2.connections}}"
+        - -d
+        - "{{.Values.wrk2.duration}}"
+        - -r
+        - "{{.Values.wrk2.RPS}}"
+        - -i
+        - "{{.Values.wrk2.initDelay}}"
+{{- template "bookinfoURLs" . }}
+        image: quay.io/kinvolk/wrk2-prometheus
+        name: wrk2-prometheus
+        volumeMounts:
+        - mountPath: /tmpfs
+          name: tempfs
+      restartPolicy: Always
+      serviceAccountName: benchmark
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tempfs

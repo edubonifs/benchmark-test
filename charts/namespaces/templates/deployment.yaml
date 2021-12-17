@@ -1,0 +1,42 @@
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: benchmark
+spec:
+---
+{{ range $e, $i := until ($.Values.bookinfo.namespace | int) }}
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: bookinfo-{{$i}}
+spec:
+---
+{{end}}
+---
+apiVersion: maistra.io/v1
+kind: ServiceMeshMember
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: default
+  namespace: benchmark
+spec:
+  controlPlaneRef:
+    name: basic
+    namespace: istio-system
+---
+{{ range $e, $i := until ($.Values.bookinfo.namespace | int) }}
+---
+apiVersion: maistra.io/v1
+kind: ServiceMeshMember
+metadata:
+  name: default
+  namespace: bookinfo-{{$i}}
+spec:
+  controlPlaneRef:
+    name: basic
+    namespace: istio-system
+---
+{{end}}

@@ -1,0 +1,12 @@
+wrk2:
+  duration: 120
+  connections: 96
+  RPS: 3000
+  initDelay: 0
+  app:
+    name: bookinfo
+    count: "10"
+    namespace: "2"
+  appImage: quay.io/kinvolk/wrk2-prometheus
+benchmark:
+  name: template
