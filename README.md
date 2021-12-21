@@ -36,11 +36,13 @@ helm template charts/pushgateway --namespace monitoring | oc apply -f -
 
 ## Inject Grafana Data Source
 
-We will inject a data source to the grafana. This data source will take the metrics from the servicemonitor we have created in thanos, so now we have the metrics we pushed to the pushgateway, also in grafana. We will also source some metrics from openshift-monitoring prometheus.
+We will inject a data source to the grafana. This data source will take the metrics from the servicemonitor we have created in thanos, so now we have the metrics we pushed to the pushgateway, also in grafana. We will also source some metrics from openshift-monitoring prometheus. For creating the datasource we need the token of the grafana serviceaccount, we will get it with the following command:
 
 ```shell
 oc sa get-token grafana-serviceaccount -n monitoring
 ```
+
+We will have to pass the helm template the value of the token, for that we can include the flag "--set grafana.token" in the helm command, or put the value in the file charts/datasource/value.yaml
 
 ```shell
 helm template charts/datasource --namespace monitoring | oc apply -f -
