@@ -36,11 +36,13 @@ helm template charts/pushgateway --namespace monitoring | oc apply -f -
 
 ## Inject Grafana Data Source
 
-We will inject a data source to the grafana. This data source will take the metrics from the servicemonitor we have created in thanos, so now we have the metrics we pushed to the pushgateway, also in grafana. We will also source some metrics from openshift-monitoring prometheus.
+We will inject a data source to the grafana. This data source will take the metrics from the servicemonitor we have created in thanos, so now we have the metrics we pushed to the pushgateway, also in grafana. We will also source some metrics from openshift-monitoring prometheus. For creating the datasource we need the token of the grafana serviceaccount, we will get it with the following command:
 
 ```shell
 oc sa get-token grafana-serviceaccount -n monitoring
 ```
+
+We will have to pass the helm template the value of the token, for that we can include the flag "--set grafana.token" in the helm command, or put the value in the file charts/datasource/value.yaml
 
 ```shell
 helm template charts/datasource --namespace monitoring | oc apply -f -
@@ -63,7 +65,7 @@ Create an API Key
 With this command of helm  we will specify hoiw many user namespaces we will create in order to deploy our applications. If you edit the variable bookinfo.replicas in the command line, you will change how many namespaces will be created.
 
 ```shell
-helm template charts/namespaces --set bookinfo.replica=2 --set bookinfo.namespaces=2 | oc apply -f -
+helm template charts/namespaces --set bookinfo.namespaces=2 | oc apply -f -
 ```
 
 ## Create bookinfo applications
@@ -81,6 +83,7 @@ Finally, we will run the benchmark. This becnhmark has some parameters:
 - wrk2.app.count -> number of bookinfos per namespace to launch the benchmark against.
 - wrk2.app.namespace -> number of namespaces to launch the benchmark against.
 - bechnmark.name -> name of the benchmark to be run
+- wrk2.app.name=edu -> name of the instance to be pushed
 - wrk2.duration -> duration of the benchmark in seconds
 - wrk2.connections -> number of concurrent calls when made a call
 - wrk2.RPS -> requests per second
@@ -89,5 +92,6 @@ Finally, we will run the benchmark. This becnhmark has some parameters:
 You can see default values in values.yaml
 
 ```shell
-helm template charts/benchmark --namespace benchmark --set wrk2.app.count=2 --set wrk2.app.namespace=2 --set bechnmark.name=edu | oc apply -f -
+helm template charts/benchmark --namespace benchmark --set wrk2.app.count=2 --set wrk2.app.namespace=2 --set bechnmark.name=edu --set wrk2.app.name=edu | oc apply -f -
 ```
+
