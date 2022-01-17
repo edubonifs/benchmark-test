@@ -24,7 +24,7 @@ Install community operator grafana in monitoring namespace
 
 ## Install Pushgateway
 
-The pushgateway will be the point in which we will push the metric we get whe we run the benchmark. When we run the bechmark, we will specify the address of the pushgateway, for our benchmark to push the metrics. We will also deploy a servicemonitor in this namespace, with the use of this servicemonitor, thanos will scrap the metrics of this pushgateway.
+The pushgateway will be the point in which we will push the metric we get whe we run the benchmark. When we run the benchmark, we will specify the address of the pushgateway, for our benchmark to push the metrics. We will also deploy a servicemonitor in this namespace, with the use of this servicemonitor, thanos will scrap the metrics of this pushgateway.
 
 ```shell
 helm template charts/pushgateway --namespace monitoring | oc apply -f -
@@ -82,7 +82,7 @@ Finally, we will run the benchmark. This becnhmark has some parameters:
 
 - wrk2.app.count -> number of bookinfos per namespace to launch the benchmark against.
 - wrk2.app.namespace -> number of namespaces to launch the benchmark against.
-- bechnmark.name -> name of the benchmark to be run
+- benchnmark.name -> name of the benchmark to be run
 - wrk2.app.name=edu -> name of the instance to be pushed
 - wrk2.duration -> duration of the benchmark in seconds
 - wrk2.connections -> number of concurrent calls when made a call
@@ -92,6 +92,6 @@ Finally, we will run the benchmark. This becnhmark has some parameters:
 You can see default values in values.yaml
 
 ```shell
-helm template charts/benchmark --namespace benchmark --set wrk2.app.count=2 --set wrk2.app.namespace=2 --set bechnmark.name=edu --set wrk2.app.name=edu | oc apply -f -
+helm template charts/benchmark --namespace benchmark --set wrk2.app.count=2 --set wrk2.app.namespace=2 --set benchnmark.name=edu --set wrk2.app.name=edu | oc apply -f -
 ```
 
