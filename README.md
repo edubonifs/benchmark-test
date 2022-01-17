@@ -91,5 +91,5 @@ Finally, we will run the benchmark. This becnhmark has some parameters:
 You can see default values in values.yaml
 
 ```shell
-helm template charts/benchmark --namespace benchmark --set wrk2.app.count=2 --set wrk2.app.namespace=2 --set bechnmark.name=edu | oc apply -f -
+helm template charts/benchmark --namespace benchmark --set wrk2.app.count=2 --set wrk2.app.namespace=2 --set bechnmark.name=edu --set wrk2.app.name=edu | oc apply -f -
 ```
