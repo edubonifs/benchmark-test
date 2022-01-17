@@ -83,6 +83,7 @@ Finally, we will run the benchmark. This becnhmark has some parameters:
 - wrk2.app.count -> number of bookinfos per namespace to launch the benchmark against.
 - wrk2.app.namespace -> number of namespaces to launch the benchmark against.
 - bechnmark.name -> name of the benchmark to be run
+- wrk2.app.name=edu -> name of the instance to be pushed
 - wrk2.duration -> duration of the benchmark in seconds
 - wrk2.connections -> number of concurrent calls when made a call
 - wrk2.RPS -> requests per second
