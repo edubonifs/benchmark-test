@@ -65,7 +65,7 @@ Create an API Key
 With this command of helm  we will specify hoiw many user namespaces we will create in order to deploy our applications. If you edit the variable bookinfo.replicas in the command line, you will change how many namespaces will be created.
 
 ```shell
-helm template charts/namespaces --set bookinfo.replica=2 --set bookinfo.namespaces=2 | oc apply -f -
+helm template charts/namespaces --set bookinfo.namespaces=2 | oc apply -f -
 ```
 
 ## Create bookinfo applications
