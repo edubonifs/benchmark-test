@@ -20,6 +20,10 @@ To measure our benchmark, we will install a grafana with the use of a community 
 oc new-project monitoring
 ```
 
+```shell
+oc apply -n monitoring -f operators/grafana/grafana-subscription.yaml
+```
+
 Install community operator grafana in monitoring namespace
 
 ## Install Pushgateway
