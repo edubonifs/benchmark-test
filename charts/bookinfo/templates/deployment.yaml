@@ -63,7 +63,7 @@ spec:
       serviceAccountName: bookinfo-details
       containers:
       - name: details
-        image: maistra/examples-bookinfo-details-v1:2.0.0
+        image: quay.io/fperea_rh/bookinfo-details:2.0.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -215,7 +215,7 @@ spec:
       serviceAccountName: bookinfo-reviews
       containers:
       - name: reviews
-        image: maistra/examples-bookinfo-reviews-v1:2.0.0
+        image: quay.io/fperea_rh/bookinfo-reviews:2.0.0
         imagePullPolicy: IfNotPresent
         env:
         - name: LOG_DIR
@@ -266,7 +266,7 @@ spec:
       serviceAccountName: bookinfo-reviews
       containers:
       - name: reviews
-        image: maistra/examples-bookinfo-reviews-v2:2.0.0
+        image: quay.io/fperea_rh/bookinfo-reviews:2.0.0-v2
         imagePullPolicy: IfNotPresent
         env:
         - name: LOG_DIR
@@ -317,7 +317,7 @@ spec:
       serviceAccountName: bookinfo-reviews
       containers:
       - name: reviews
-        image: maistra/examples-bookinfo-reviews-v3:2.0.0
+        image: quay.io/fperea_rh/bookinfo-reviews:2.0.0-v3
         imagePullPolicy: IfNotPresent
         env:
         - name: LOG_DIR
@@ -406,13 +406,20 @@ spec:
       serviceAccountName: bookinfo-productpage
       containers:
       - name: productpage
-        image: maistra/examples-bookinfo-productpage-v1:2.0.0
+        image: quay.io/fperea_rh/bookinfo-productpage:2.0.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
         volumeMounts:
         - name: tmp
           mountPath: /tmp
+        env:
+        - name: REVIEWS_HOSTNAME
+          value: reviews-{{$i}}.bookinfo-{{$b}}.svc.cluster.local
+        - name: DETAILS_HOSTNAME
+          value: details-{{$i}}.bookinfo-{{$b}}.svc.cluster.local
+        - name: RATINGS_HOSTNAME
+          value: ratings-{{$i}}.bookinfo-{{$b}}.svc.cluster.local
       volumes:
       - name: tmp
         emptyDir: {}

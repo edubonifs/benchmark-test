@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: grafana-service
+  namespace: monitoring
+spec:
+  host: grafana-service-monitoring.$EXTERNAL_DOMAIN
+  port:
+    targetPort: grafana
+  to:
+    kind: Service
+    name: grafana-service
+    weight: 100
+  wildcardPolicy: None

@@ -30,6 +30,7 @@ spec:
         - "{{.Values.wrk2.initDelay}}"
 {{- template "bookinfoURLs" . }}
         image: quay.io/kinvolk/wrk2-prometheus
+        imagePullPolicy: Always
         name: wrk2-prometheus
         volumeMounts:
         - mountPath: /tmpfs

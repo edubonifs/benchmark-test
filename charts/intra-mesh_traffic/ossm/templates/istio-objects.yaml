@@ -1,0 +1,142 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: pushgateway
+  namespace: benchmark
+spec:
+  hosts:
+  - pushgateway.monitoring.svc.cluster.local
+  exportTo:
+  - '.'
+  location: MESH_EXTERNAL
+  ports:
+  - name: http-9091
+    number: 9091
+    protocol: HTTP
+  resolution: DNS
+---
+{{ range $e, $i := until ($.Values.wrk2.app.count | int) }}
+{{ range $a, $b := until ($.Values.wrk2.app.namespace | int) }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: productpage-{{$i}}
+  namespace: benchmark
+spec:
+  exportTo:
+  - '.'
+  host: productpage-{{$i}}.bookinfo-{{$b}}.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+{{end}}
+{{end}}
+---
+{{ range $e, $i := until ($.Values.wrk2.app.count | int) }}
+{{ range $a, $b := until ($.Values.wrk2.app.namespace | int) }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: productpage-{{$i}}
+  namespace: bookinfo-{{$b}}
+spec:
+  exportTo:
+  - benchmark
+  - bookinfo-{{$b}}
+  hosts:
+  - productpage-{{$i}}.bookinfo-{{$b}}
+  gateways:
+  - mesh
+  http:
+  - route:
+    - destination:
+        host: productpage-{{$i}}.bookinfo-{{$b}}.svc.cluster.local
+        port:
+          number: 9080
+---
+{{end}}
+{{end}}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pushgateway
+  namespace: benchmark
+spec:
+  host: pushgateway.monitoring.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---
+{{ range $e, $i := until ($.Values.wrk2.app.count | int) }}
+{{ range $a, $b := until ($.Values.wrk2.app.namespace | int) }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ratings-{{$i}}
+  namespace: bookinfo-{{$b}}
+spec:
+  exportTo:
+  - '.'
+  hosts:
+  - ratings
+  gateways:
+  - mesh
+  http:
+  - route:
+    - destination:
+        host: ratings-{{$i}}.bookinfo-{{$b}}.svc.cluster.local
+---
+{{end}}
+{{end}}
+---
+{{ range $e, $i := until ($.Values.wrk2.app.count | int) }}
+{{ range $a, $b := until ($.Values.wrk2.app.namespace | int) }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: details-{{$i}}
+  namespace: bookinfo-{{$b}}
+spec:
+  exportTo:
+  - '.'
+  hosts:
+  - details
+  gateways:
+  - mesh
+  http:
+  - route:
+    - destination:
+        host: details-{{$i}}.bookinfo-{{$b}}.svc.cluster.local
+---
+{{end}}
+{{end}}
+---
+{{ range $e, $i := until ($.Values.wrk2.app.count | int) }}
+{{ range $a, $b := until ($.Values.wrk2.app.namespace | int) }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews-{{$i}}
+  namespace: bookinfo-{{$b}}
+spec:
+  exportTo:
+  - '.'
+  hosts:
+  - reviews
+  gateways:
+  - mesh
+  http:
+  - route:
+    - destination:
+        host: reviews-{{$i}}.bookinfo-{{$b}}.svc.cluster.local
+---
+{{end}}
+{{end}}

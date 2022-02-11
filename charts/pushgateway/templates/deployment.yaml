@@ -3,6 +3,26 @@ kind: Grafana
 metadata:
   name: grafana
   namespace: monitoring
+spec:
+  config:
+    auth:
+      disable_signout_menu: true
+    auth.anonymous:
+      enabled: true
+    log:
+      level: warn
+      mode: console
+    security:
+      admin_password: redhat
+      admin_user: admin
+  ingress:
+    enabled: true
+  dashboardLabelSelector:
+    - matchExpressions:
+        - key: app
+          operator: In
+          values:
+            - grafana
 ---
 apiVersion: apps/v1
 kind: Deployment

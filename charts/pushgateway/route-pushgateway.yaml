@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: pushgateway
+  namespace: monitoring
+spec:
+  host: pushgateway-monitoring.$EXTERNAL_DOMAIN
+  port:
+    targetPort: scrape
+  to:
+    kind: Service
+    name: pushgateway
+    weight: 100
+  wildcardPolicy: None

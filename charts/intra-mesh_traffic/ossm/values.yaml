@@ -1,0 +1,9 @@
+wrk2:
+  duration: template
+  connections: template
+  RPS: 3000
+  initDelay: 0
+  app:
+    name: template
+benchmark:
+  name: template
